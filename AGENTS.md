@@ -2,16 +2,16 @@
 
 ## Setup
 
-- Install dependencies with `pnpm install`.
-- Start the development server with `pnpm dev`.
+- Install dependencies with `npm install`.
+- Start the development server with `npm dev`.
 - use tailwind for styling
 - Next.js
 - Tailwind.css
 
 ## Verification
 
-- Run `pnpm test` after modifying application logic.
-- Run `pnpm lint` and `pnpm typecheck` before reporting completion.
+- Run `npm test` after modifying application logic.
+- Run `npm lint` and `npm typecheck` before reporting completion.
 
 ## Conventions
 
