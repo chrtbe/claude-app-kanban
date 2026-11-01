@@ -4,7 +4,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { motion } from "motion/react";
 import { useState } from "react";
-import type { Task } from "@/lib/board";
+import type { ColumnColor, Task } from "@/lib/board";
 
 type Props = {
   task: Task;
@@ -13,15 +13,24 @@ type Props = {
 };
 
 /** Visual card, shared by the in-column item and the drag overlay. */
-export function TaskCardView({ task, lifted = false }: { task: Task; lifted?: boolean }) {
+export function TaskCardView({
+  task,
+  lifted = false,
+  color,
+}: {
+  task: Task;
+  lifted?: boolean;
+  color?: ColumnColor;
+}) {
   return (
     <div
-      className={`rounded-lg border border-neutral-200 bg-white p-3 text-sm shadow-sm ${
-        lifted ? "rotate-2 scale-105 cursor-grabbing shadow-xl" : ""
+      style={color ? ({ "--accent": `var(--c-${color})` } as React.CSSProperties) : undefined}
+      className={`rounded-lg border border-line bg-card p-3 text-sm shadow-sm ${
+        lifted ? "rotate-2 scale-105 cursor-grabbing shadow-xl ring-2 ring-[var(--accent)]" : ""
       }`}
     >
       <p className="font-medium">{task.title}</p>
-      {task.description && <p className="mt-1 text-neutral-500">{task.description}</p>}
+      {task.description && <p className="mt-1 text-muted">{task.description}</p>}
     </div>
   );
 }
@@ -59,7 +68,7 @@ export function TaskCard({ task, onUpdate, onDelete }: Props) {
               e.preventDefault();
               save();
             }}
-            className="flex flex-col gap-2 rounded-lg border border-neutral-300 bg-white p-3 text-sm"
+            className="flex flex-col gap-2 rounded-lg border border-line bg-card p-3 text-sm"
           >
             <input
               autoFocus
@@ -67,7 +76,7 @@ export function TaskCard({ task, onUpdate, onDelete }: Props) {
               onChange={(e) => setTitle(e.target.value)}
               onKeyDown={(e) => e.key === "Escape" && setEditing(false)}
               aria-label="Task title"
-              className="rounded border border-neutral-300 px-2 py-1 outline-none focus:border-neutral-500"
+              className="rounded border border-line bg-card px-2 py-1 outline-none focus:border-muted"
             />
             <textarea
               value={description}
@@ -75,11 +84,11 @@ export function TaskCard({ task, onUpdate, onDelete }: Props) {
               aria-label="Task description"
               placeholder="Description (optional)"
               rows={2}
-              className="rounded border border-neutral-300 px-2 py-1 outline-none focus:border-neutral-500"
+              className="rounded border border-line bg-card px-2 py-1 outline-none focus:border-muted"
             />
             <div className="flex gap-2">
-              <button className="rounded bg-neutral-900 px-3 py-1 text-white">Save</button>
-              <button type="button" onClick={() => setEditing(false)} className="px-3 py-1 text-neutral-500">
+              <button className="rounded bg-primary px-3 py-1 text-on-primary">Save</button>
+              <button type="button" onClick={() => setEditing(false)} className="px-3 py-1 text-muted">
                 Cancel
               </button>
             </div>
@@ -87,7 +96,7 @@ export function TaskCard({ task, onUpdate, onDelete }: Props) {
         ) : (
           <div className="group relative cursor-grab touch-none" {...attributes} {...listeners}>
             <TaskCardView task={task} />
-            <div className="absolute right-2 top-2 hidden gap-1 text-xs group-hover:flex">
+            <div className="absolute right-2 top-2 flex gap-1 text-xs [@media(hover:hover)]:hidden [@media(hover:hover)]:group-hover:flex">
               <button
                 onPointerDown={(e) => e.stopPropagation()}
                 onClick={() => {
@@ -95,7 +104,7 @@ export function TaskCard({ task, onUpdate, onDelete }: Props) {
                   setDescription(task.description ?? "");
                   setEditing(true);
                 }}
-                className="rounded bg-neutral-100 px-1.5 py-0.5 hover:bg-neutral-200"
+                className="rounded bg-hover px-1.5 py-0.5 hover:bg-line"
               >
                 Edit
               </button>
@@ -103,7 +112,7 @@ export function TaskCard({ task, onUpdate, onDelete }: Props) {
                 onPointerDown={(e) => e.stopPropagation()}
                 onClick={onDelete}
                 aria-label={`Delete ${task.title}`}
-                className="rounded bg-neutral-100 px-1.5 py-0.5 hover:bg-red-100 hover:text-red-700"
+                className="rounded bg-hover px-1.5 py-0.5 hover:bg-red-500/15 hover:text-red-500"
               >
                 ✕
               </button>

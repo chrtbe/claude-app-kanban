@@ -4,10 +4,15 @@ export type Task = {
   description?: string;
 };
 
+export const COLUMN_COLORS = ["indigo", "emerald", "amber", "rose", "sky", "violet"] as const;
+export type ColumnColor = (typeof COLUMN_COLORS)[number];
+
 export type Column = {
   id: string;
   title: string;
   taskIds: string[];
+  /** Optional: boards saved before colors existed fall back to `columnColor`. */
+  color?: ColumnColor;
 };
 
 export type Board = {
@@ -17,18 +22,31 @@ export type Board = {
 
 const newId = () => crypto.randomUUID();
 
+/** Stored color, or a position-based fallback for columns saved without one. */
+export const columnColor = (column: Column, index: number): ColumnColor =>
+  column.color ?? COLUMN_COLORS[index % COLUMN_COLORS.length];
+
+const nextColor = (columns: Column[]): ColumnColor => {
+  const used = new Set(columns.map(columnColor));
+  return COLUMN_COLORS.find((c) => !used.has(c)) ?? COLUMN_COLORS[columns.length % COLUMN_COLORS.length];
+};
+
 export const createInitialBoard = (): Board => ({
-  columns: ["To Do", "In Progress", "Done"].map((title) => ({
+  columns: ["To Do", "In Progress", "Done"].map((title, i) => ({
     id: newId(),
     title,
     taskIds: [],
+    color: COLUMN_COLORS[i],
   })),
   tasks: {},
 });
 
 export const addColumn = (board: Board, title: string): Board => ({
   ...board,
-  columns: [...board.columns, { id: newId(), title, taskIds: [] }],
+  columns: [
+    ...board.columns,
+    { id: newId(), title, taskIds: [], color: nextColor(board.columns) },
+  ],
 });
 
 export const renameColumn = (board: Board, columnId: string, title: string): Board => ({
