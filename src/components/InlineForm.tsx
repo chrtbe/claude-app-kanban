@@ -22,7 +22,7 @@ export function InlineForm({ placeholder, buttonLabel, onSubmit }: Props) {
     return (
       <button
         onClick={() => setOpen(true)}
-        className="w-full rounded-lg px-3 py-2 text-left text-sm text-neutral-500 hover:bg-neutral-200/60"
+        className="w-full rounded-lg px-3 py-2 text-left text-sm text-muted hover:bg-hover"
       >
         + {buttonLabel}
       </button>
@@ -45,11 +45,11 @@ export function InlineForm({ placeholder, buttonLabel, onSubmit }: Props) {
         onChange={(e) => setValue(e.target.value)}
         onKeyDown={(e) => e.key === "Escape" && close()}
         placeholder={placeholder}
-        className="rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm outline-none focus:border-neutral-500"
+        className="rounded-lg border border-line bg-card px-3 py-2 text-sm outline-none focus:border-muted"
       />
       <div className="flex gap-2">
-        <button className="rounded-lg bg-neutral-900 px-3 py-1.5 text-sm text-white">Add</button>
-        <button type="button" onClick={close} className="px-3 py-1.5 text-sm text-neutral-500">
+        <button className="rounded-lg bg-primary px-3 py-1.5 text-sm text-on-primary">Add</button>
+        <button type="button" onClick={close} className="px-3 py-1.5 text-sm text-muted">
           Cancel
         </button>
       </div>

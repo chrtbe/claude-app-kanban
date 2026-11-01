@@ -4,12 +4,13 @@ import { useDroppable } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { AnimatePresence } from "motion/react";
 import { useState } from "react";
-import type { Column as ColumnType, Task } from "@/lib/board";
+import { type Column as ColumnType, type ColumnColor, type Task } from "@/lib/board";
 import { InlineForm } from "./InlineForm";
 import { TaskCard } from "./TaskCard";
 
 type Props = {
   column: ColumnType;
+  color: ColumnColor;
   tasks: Task[];
   onRename: (title: string) => void;
   onDelete: () => void;
@@ -20,6 +21,7 @@ type Props = {
 
 export function Column({
   column,
+  color,
   tasks,
   onRename,
   onDelete,
@@ -40,11 +42,14 @@ export function Column({
     <section
       ref={setNodeRef}
       aria-label={column.title}
-      className={`flex w-72 shrink-0 flex-col gap-3 rounded-xl p-3 transition-colors ${
-        isOver ? "bg-neutral-200" : "bg-neutral-100"
+      style={{ "--accent": `var(--c-${color})` } as React.CSSProperties}
+      className={`flex w-[85vw] shrink-0 snap-start flex-col gap-3 rounded-xl border-t-4 border-t-[var(--accent)] p-3 transition-[background-color,box-shadow] sm:w-72 ${
+        isOver
+          ? "bg-[color-mix(in_srgb,var(--accent)_20%,transparent)] ring-2 ring-[var(--accent)]"
+          : "bg-[color-mix(in_srgb,var(--accent)_8%,transparent)] dark:bg-[color-mix(in_srgb,var(--accent)_12%,transparent)]"
       }`}
     >
-      <header className="flex items-center justify-between gap-2">
+      <header className="flex items-center justify-between gap-2 rounded-lg bg-[color-mix(in_srgb,var(--accent)_12%,transparent)] px-1 py-0.5">
         {editing ? (
           <input
             autoFocus
@@ -55,7 +60,7 @@ export function Column({
               if (e.key === "Enter") commitTitle(e.currentTarget.value);
               if (e.key === "Escape") setEditing(false);
             }}
-            className="w-full rounded border border-neutral-300 px-2 py-1 text-sm font-semibold outline-none"
+            className="w-full rounded border border-line bg-card px-2 py-1 text-sm font-semibold outline-none"
           />
         ) : (
           <h2
@@ -63,8 +68,9 @@ export function Column({
             title="Double-click to rename"
             className="flex-1 cursor-text px-1 text-sm font-semibold"
           >
+            <span aria-hidden className="mr-2 inline-block size-2 rounded-full bg-[var(--accent)]" />
             {column.title}
-            <span className="ml-2 font-normal text-neutral-400">{tasks.length}</span>
+            <span className="ml-2 font-normal text-muted">{tasks.length}</span>
           </h2>
         )}
         <button
@@ -74,7 +80,7 @@ export function Column({
             }
           }}
           aria-label={`Delete column ${column.title}`}
-          className="rounded px-1.5 text-neutral-400 hover:bg-red-100 hover:text-red-700"
+          className="rounded px-1.5 text-muted hover:bg-red-500/15 hover:text-red-500"
         >
           ✕
         </button>

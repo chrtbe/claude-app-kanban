@@ -6,6 +6,7 @@ import {
   DragOverlay,
   KeyboardSensor,
   PointerSensor,
+  TouchSensor,
   useSensor,
   useSensors,
   type DragEndEvent,
@@ -17,6 +18,7 @@ import { useEffect, useState } from "react";
 import {
   addColumn,
   addTask,
+  columnColor,
   createInitialBoard,
   deleteColumn,
   deleteTask,
@@ -42,6 +44,8 @@ export function Board({ storage = localStorageBoard }: { storage?: BoardStorage 
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    // Press-and-hold on touch so swiping still scrolls the board.
+    useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 8 } }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   );
 
@@ -76,6 +80,8 @@ export function Board({ storage = localStorageBoard }: { storage?: BoardStorage 
   };
 
   const activeTask = activeId ? board.tasks[activeId] : null;
+  const activeIndex = activeId ? board.columns.findIndex((c) => c.taskIds.includes(activeId)) : -1;
+  const activeColor = activeIndex >= 0 ? columnColor(board.columns[activeIndex], activeIndex) : undefined;
 
   return (
     <DndContext
@@ -86,11 +92,12 @@ export function Board({ storage = localStorageBoard }: { storage?: BoardStorage 
       onDragEnd={onDragEnd}
       onDragCancel={() => setActiveId(null)}
     >
-      <div className="flex items-start gap-4 overflow-x-auto pb-4">
-        {board.columns.map((column) => (
+      <div className="-mx-4 flex snap-x snap-proximity items-start gap-3 overflow-x-auto px-4 pb-4 sm:mx-0 sm:snap-none sm:gap-4 sm:px-0">
+        {board.columns.map((column, i) => (
           <Column
             key={column.id}
             column={column}
+            color={columnColor(column, i)}
             tasks={column.taskIds.map((id) => board.tasks[id])}
             onRename={(title) => update((b) => renameColumn(b, column.id, title))}
             onDelete={() => update((b) => deleteColumn(b, column.id))}
@@ -99,7 +106,7 @@ export function Board({ storage = localStorageBoard }: { storage?: BoardStorage 
             onDeleteTask={(id) => update((b) => deleteTask(b, id))}
           />
         ))}
-        <div className="w-72 shrink-0">
+        <div className="w-[85vw] shrink-0 snap-start sm:w-72">
           <InlineForm
             placeholder="Column title"
             buttonLabel="Add column"
@@ -108,7 +115,7 @@ export function Board({ storage = localStorageBoard }: { storage?: BoardStorage 
         </div>
       </div>
       <DragOverlay dropAnimation={{ duration: 250, easing: "cubic-bezier(0.18, 0.89, 0.32, 1.28)" }}>
-        {activeTask ? <TaskCardView task={activeTask} lifted /> : null}
+        {activeTask ? <TaskCardView task={activeTask} lifted color={activeColor} /> : null}
       </DragOverlay>
     </DndContext>
   );

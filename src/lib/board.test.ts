@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   addColumn,
   addTask,
+  columnColor,
   createInitialBoard,
   deleteColumn,
   deleteTask,
@@ -34,6 +35,21 @@ describe("board", () => {
     board = renameColumn(board, id, "QA");
     expect(board.columns[3].title).toBe("QA");
     expect(deleteColumn(board, id).columns).toHaveLength(3);
+  });
+
+  it("gives each column a distinct color and reuses freed ones", () => {
+    let board = addColumn(createInitialBoard(), "Review");
+    expect(new Set(board.columns.map((c) => c.color)).size).toBe(4);
+    const freed = board.columns[1].color;
+    board = deleteColumn(board, board.columns[1].id);
+    board = addColumn(board, "QA");
+    expect(board.columns[3].color).toBe(freed);
+  });
+
+  it("falls back to a position-based color for columns without one", () => {
+    const column = { id: "x", title: "Old", taskIds: [] };
+    expect(columnColor(column, 0)).toBe("indigo");
+    expect(columnColor(column, 7)).toBe("emerald");
   });
 
   it("deleting a column removes its tasks", () => {
