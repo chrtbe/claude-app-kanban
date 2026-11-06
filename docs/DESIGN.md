@@ -2,66 +2,54 @@
 name: Kanban Design System
 description: Minimal, Primer-inspired Kanban board with organic corners and playful motion.
 colors:
-  light:
-    page: "#ffffff"
-    surface: "#f6f8fa"
-    card: "#ffffff"
-    fg: "#1f2328"
-    muted: "#4d5762"
-    line: "#818b98"
-    hover: "#eaeef2"
-    counter: "#818b981f"
-    primary: "#1f883d"
-    primary-hover: "#1a7f37"
-    on-primary: "#ffffff"
-    focus: "#0969da"
-    danger: "#d1242f"
-  dark:
-    page: "#0d1117"
-    surface: "#151b23"
-    card: "#0d1117"
-    fg: "#e6edf3"
-    muted: "#9198a1"
-    line: "#7d8590"
-    hover: "#262c36"
-    counter: "#656c7633"
-    primary: "#238636"
-    primary-hover: "#2ea043"
-    on-primary: "#ffffff"
-    focus: "#4493f8"
-    danger: "#f85149"
-  column-hues:
-    indigo: { light: "#0969da", dark: "#4493f8", icon: Circle }
-    emerald: { light: "#1a7f37", dark: "#3fb950", icon: CircleDot }
-    amber: { light: "#9a6700", dark: "#d29922", icon: CircleCheck }
-    rose: { light: "#cf222e", dark: "#f85149", icon: Diamond }
-    sky: { light: "#0a7ea4", dark: "#39c5cf", icon: Square }
-    violet: { light: "#8250df", dark: "#ab7df8", icon: Hexagon }
+  primary: "#1f883d"
+  primary-hover: "#1a7f37"
+  on-primary: "#ffffff"
+  page: "#ffffff"
+  surface: "#f6f8fa"
+  card: "#ffffff"
+  fg: "#1f2328"
+  muted: "#4d5762"
+  line: "#818b98"
+  hover: "#eaeef2"
+  counter: "#818b981f"
+  focus: "#0969da"
+  danger: "#d1242f"
+  primary-dark: "#238636"
+  primary-hover-dark: "#2ea043"
+  page-dark: "#0d1117"
+  surface-dark: "#151b23"
+  card-dark: "#0d1117"
+  fg-dark: "#e6edf3"
+  muted-dark: "#9198a1"
+  line-dark: "#7d8590"
+  hover-dark: "#262c36"
+  counter-dark: "#656c7633"
+  focus-dark: "#4493f8"
+  danger-dark: "#f85149"
+  indigo: "#0969da"
+  emerald: "#1a7f37"
+  amber: "#9a6700"
+  rose: "#cf222e"
+  sky: "#0a7ea4"
+  violet: "#8250df"
+  indigo-dark: "#4493f8"
+  emerald-dark: "#3fb950"
+  amber-dark: "#d29922"
+  rose-dark: "#f85149"
+  sky-dark: "#39c5cf"
+  violet-dark: "#ab7df8"
 typography:
-  family: "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
-  base: 14px
-  app-title: { size: 14px, weight: 600 }
-  column-title: { size: 14px, weight: 600 }
-  card-title: { size: 14px, weight: 500, color: fg }
-  body: { size: 14px, weight: 400, color: muted }
-  counter: { size: 12px, weight: 500 }
+  app-title: { fontFamily: Inter, fontSize: 14px, fontWeight: 600 }
+  column-title: { fontFamily: Inter, fontSize: 14px, fontWeight: 600 }
+  card-title: { fontFamily: Inter, fontSize: 14px, fontWeight: 500 }
+  body: { fontFamily: Inter, fontSize: 14px, fontWeight: 400 }
+  counter: { fontFamily: Inter, fontSize: 12px, fontWeight: 500 }
 rounded:
-  column: "28px 10px 28px 10px"
-  column-over: "10px 28px 10px 28px"
-  card: "16px 6px 16px 6px"
-  card-hover: "6px 16px 6px 16px"
   control: 6px
   pill: 9999px
 spacing:
   unit: 4px
-  scale: [4, 8, 12, 16, 24]
-motion:
-  spring: "cubic-bezier(0.34, 1.56, 0.64, 1) 300ms"
-  drop: "cubic-bezier(0.18, 0.89, 0.32, 1.28) 250ms"
-  counter-spring: { stiffness: 500, damping: 28 }
-  arrive-ring: 700ms ease-out
-  icon-pop: 550ms ease-out
-  blobs: 18s ease-in-out infinite
 ---
 
 # Kanban Design System
@@ -145,3 +133,14 @@ Lucide, 16px (14px in card actions), 2px stroke, `currentColor`. No emoji.
 - Do keep effects short (< 1s) and tied to a user action.
 - Don't add gradients, heavy shadows at rest, or new font families.
 - Don't use color alone to tell columns apart — each hue has its own icon.
+
+## Tokens not in the frontmatter
+
+The linter accepts only single values, so these live here (CSS variables in `globals.css`):
+
+- **Leaf corners** (big–small–big–small): column `28px 10px 28px 10px` → over `10px 28px 10px 28px`; card `16px 6px 16px 6px` → hover `6px 16px 6px 16px`.
+- **Column hue icons:** indigo Circle · emerald CircleDot · amber CircleCheck · rose Diamond · sky Square · violet Hexagon.
+- **Font stack:** Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif. Base size 14px.
+- **Spacing scale:** 4, 8, 12, 16, 24.
+- **Motion:** spring `cubic-bezier(0.34, 1.56, 0.64, 1)` 300ms · drop `cubic-bezier(0.18, 0.89, 0.32, 1.28)` 250ms · counter spring stiffness 500 / damping 28 · arrive ring 700ms · icon pop 550ms · blobs 18s.
+- **Dark mode:** each color has a `-dark` twin.
