@@ -6,6 +6,7 @@ import {
   createInitialBoard,
   deleteColumn,
   deleteTask,
+  getProgress,
   moveTask,
   renameColumn,
   updateTask,
@@ -83,5 +84,23 @@ describe("board", () => {
   it("ignores unknown ids", () => {
     const { board } = setup();
     expect(moveTask(board, "nope", "nope")).toBe(board);
+  });
+});
+
+describe("getProgress", () => {
+  it("is empty for a board without tasks", () => {
+    const p = getProgress(createInitialBoard());
+    expect(p.total).toBe(0);
+    expect(p.donePercent).toBe(0);
+    expect(p.columns.map((c) => c.percent)).toEqual([0, 0, 0]);
+  });
+
+  it("counts shares per column and done = last column", () => {
+    const { board, b } = setup();
+    const last = board.columns[2].id;
+    const p = getProgress(moveTask(moveTask(board, board.columns[0].taskIds[0], b), board.columns[0].taskIds[1], last));
+    expect(p.total).toBe(3);
+    expect(p.columns.map((c) => c.count)).toEqual([1, 1, 1]);
+    expect(p.donePercent).toBe(33);
   });
 });

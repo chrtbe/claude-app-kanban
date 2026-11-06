@@ -122,3 +122,19 @@ export const moveTask = (
     }),
   };
 };
+
+export type ColumnProgress = { id: string; title: string; count: number; percent: number };
+export type Progress = { total: number; donePercent: number; columns: ColumnProgress[] };
+
+/** Share of all tasks per column; "done" is the last column. */
+export const getProgress = (board: Board): Progress => {
+  const total = board.columns.reduce((sum, c) => sum + c.taskIds.length, 0);
+  const percentOf = (n: number) => (total === 0 ? 0 : Math.round((n / total) * 100));
+  const columns = board.columns.map((c) => ({
+    id: c.id,
+    title: c.title,
+    count: c.taskIds.length,
+    percent: percentOf(c.taskIds.length),
+  }));
+  return { total, donePercent: columns.length > 1 ? columns[columns.length - 1].percent : 0, columns };
+};

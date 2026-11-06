@@ -32,6 +32,7 @@ import { localStorageBoard, type BoardStorage } from "@/lib/storage";
 import { Column, type Arrival } from "./Column";
 import { InlineForm } from "./InlineForm";
 import { TaskCardView } from "./TaskCard";
+import { ProgressTracker } from "./ProgressTracker";
 
 export function Board({ storage = localStorageBoard }: { storage?: BoardStorage }) {
   // Client-only (see BoardLoader), so reading storage during init is safe.
@@ -130,6 +131,7 @@ export function Board({ storage = localStorageBoard }: { storage?: BoardStorage 
           />
         </div>
       </div>
+      <ProgressTracker board={board} />
       <DragOverlay dropAnimation={{ duration: 250, easing: "cubic-bezier(0.18, 0.89, 0.32, 1.28)" }}>
         {activeTask ? <TaskCardView task={activeTask} color={activeColor} lifted /> : null}
       </DragOverlay>
