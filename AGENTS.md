@@ -38,7 +38,8 @@
 ## Documentation
 
 - Save all docs in the "docs" folder
-- Document every feature in "Features.md"
+- Document every feature in "Features.md" (see [docs/Features.md](docs/Features.md))
+- Follow the design system in [docs/DESIGN.md](docs/DESIGN.md) for all UI work
 - Document all changes I agreed on
 - Keep the documentations short, simple and easy to understand
 - Document risks and problems in "Risks.md"
