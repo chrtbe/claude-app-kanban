@@ -12,6 +12,7 @@
 - **Status-change animations** – when a task lands in another column: glow ring on the card, column icon pops, counters roll, and confetti when it lands in the last column (`canvas-confetti`). Short (<1s); all off with reduced motion.
 - **Dark mode** – follows the OS setting (no toggle), using Primer dark colors as CSS variables in `globals.css`.
 - **Responsive** – on phones columns are ~85% wide with scroll-snap; card Edit/Delete are always visible on touch devices; touch drag needs a short press so swiping still scrolls.
+- **Progress tracker** – panel below the board: stacked bar with each column's share of all tasks (column hue, animated), "% done" (= last column) and a per-column list with count and percent. Legend is 1 / 2 / 3 columns on phone / tablet / desktop.
 - **Persistence** – saved in the browser's localStorage.
 
 ## Agreed decisions

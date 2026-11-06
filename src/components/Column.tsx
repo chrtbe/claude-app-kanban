@@ -9,7 +9,7 @@ import { type Column as ColumnType, type ColumnColor, type Task } from "@/lib/bo
 import { InlineForm } from "./InlineForm";
 import { TaskCard } from "./TaskCard";
 
-const COLUMN_ICONS: Record<ColumnColor, LucideIcon> = {
+export const COLUMN_ICONS: Record<ColumnColor, LucideIcon> = {
   indigo: Circle,
   emerald: CircleDot,
   amber: CircleCheck,
