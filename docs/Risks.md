@@ -7,3 +7,5 @@
 - **Pre-release dependencies** – the installed versions are very recent (Next 16, Tailwind 4, Motion 14); expect breaking changes on upgrades.
 - **Column colors are decorative** – the title carries the meaning; color alone is never relied on. Old saved boards have no stored color and get a position-based one until columns are re-created.
 - **Touch drag delay** – drags on touch start after a ~200 ms press; users may need to hold slightly longer.
+- **New UI dependencies** – `lucide-react` and Inter (fetched from Google Fonts at build time, then self-hosted); the build needs network access to Google Fonts. Blurred background blobs cost some GPU on weak devices.
+- **Confetti dependency** – `canvas-confetti` is loaded lazily on first use. Animations are decorative and disabled for reduced motion.
