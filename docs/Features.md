@@ -19,4 +19,5 @@
 - Storage sits behind the `BoardStorage` interface (`src/lib/storage.ts`) so it can be swapped for an API/database.
 - Board logic lives in pure functions (`src/lib/board.ts`) with unit tests.
 - UI follows GitHub Projects (Primer); icons from `lucide-react`, font Inter.
+- Design system (tokens, components, motion) is documented in `docs/DESIGN.md`.
 - Not yet included: multiple boards, manual theme toggle, per-column color picker, search/filter, dragging columns.
