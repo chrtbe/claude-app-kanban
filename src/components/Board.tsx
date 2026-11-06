@@ -14,7 +14,7 @@ import {
   type DragStartEvent,
 } from "@dnd-kit/core";
 import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   addColumn,
   addTask,
@@ -29,7 +29,7 @@ import {
   type Board as BoardType,
 } from "@/lib/board";
 import { localStorageBoard, type BoardStorage } from "@/lib/storage";
-import { Column } from "./Column";
+import { Column, type Arrival } from "./Column";
 import { InlineForm } from "./InlineForm";
 import { TaskCardView } from "./TaskCard";
 
@@ -37,6 +37,9 @@ export function Board({ storage = localStorageBoard }: { storage?: BoardStorage 
   // Client-only (see BoardLoader), so reading storage during init is safe.
   const [board, setBoard] = useState<BoardType>(() => storage.load() ?? createInitialBoard());
   const [activeId, setActiveId] = useState<string | null>(null);
+  const [arrival, setArrival] = useState<Arrival | null>(null);
+  const startColumnId = useRef<string | null>(null);
+  const arrivalTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   useEffect(() => {
     storage.save(board);
@@ -51,7 +54,10 @@ export function Board({ storage = localStorageBoard }: { storage?: BoardStorage 
 
   const update = (fn: (b: BoardType) => BoardType) => setBoard(fn);
 
-  const onDragStart = ({ active }: DragStartEvent) => setActiveId(String(active.id));
+  const onDragStart = ({ active }: DragStartEvent) => {
+    setActiveId(String(active.id));
+    startColumnId.current = findColumnOfTask(board, String(active.id))?.id ?? null;
+  };
 
   // Move across columns live so the card animates into its new column while dragging.
   const onDragOver = ({ active, over }: DragOverEvent) => {
@@ -69,8 +75,15 @@ export function Board({ storage = localStorageBoard }: { storage?: BoardStorage 
 
   const onDragEnd = ({ active, over }: DragEndEvent) => {
     setActiveId(null);
-    if (!over) return;
     const taskId = String(active.id);
+    // Status change = the task ended up in another column than it started in.
+    const landed = findColumnOfTask(board, taskId);
+    if (landed && startColumnId.current && landed.id !== startColumnId.current) {
+      setArrival({ taskId, columnId: landed.id, n: Date.now() });
+      clearTimeout(arrivalTimer.current);
+      arrivalTimer.current = setTimeout(() => setArrival(null), 1000);
+    }
+    if (!over) return;
     const overId = String(over.id);
     update((b) => {
       const column = findColumnOfTask(b, taskId);
@@ -81,7 +94,8 @@ export function Board({ storage = localStorageBoard }: { storage?: BoardStorage 
 
   const activeTask = activeId ? board.tasks[activeId] : null;
   const activeIndex = activeId ? board.columns.findIndex((c) => c.taskIds.includes(activeId)) : -1;
-  const activeColor = activeIndex >= 0 ? columnColor(board.columns[activeIndex], activeIndex) : undefined;
+  // The lifted card takes the color of whichever column it is currently over.
+  const activeColor = activeIndex >= 0 ? columnColor(board.columns[activeIndex], activeIndex) : "indigo";
 
   return (
     <DndContext
@@ -98,6 +112,8 @@ export function Board({ storage = localStorageBoard }: { storage?: BoardStorage 
             key={column.id}
             column={column}
             color={columnColor(column, i)}
+            isLast={i === board.columns.length - 1}
+            arrival={arrival}
             tasks={column.taskIds.map((id) => board.tasks[id])}
             onRename={(title) => update((b) => renameColumn(b, column.id, title))}
             onDelete={() => update((b) => deleteColumn(b, column.id))}
@@ -115,7 +131,7 @@ export function Board({ storage = localStorageBoard }: { storage?: BoardStorage 
         </div>
       </div>
       <DragOverlay dropAnimation={{ duration: 250, easing: "cubic-bezier(0.18, 0.89, 0.32, 1.28)" }}>
-        {activeTask ? <TaskCardView task={activeTask} lifted color={activeColor} /> : null}
+        {activeTask ? <TaskCardView task={activeTask} color={activeColor} lifted /> : null}
       </DragOverlay>
     </DndContext>
   );
