@@ -1,5 +1,6 @@
 "use client";
 
+import { Plus } from "lucide-react";
 import { useState } from "react";
 
 type Props = {
@@ -22,9 +23,10 @@ export function InlineForm({ placeholder, buttonLabel, onSubmit }: Props) {
     return (
       <button
         onClick={() => setOpen(true)}
-        className="w-full rounded-lg px-3 py-2 text-left text-sm text-muted hover:bg-hover"
+        className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm text-muted hover:bg-hover hover:text-fg"
       >
-        + {buttonLabel}
+        <Plus aria-hidden className="size-4" />
+        {buttonLabel}
       </button>
     );
   }
@@ -45,11 +47,11 @@ export function InlineForm({ placeholder, buttonLabel, onSubmit }: Props) {
         onChange={(e) => setValue(e.target.value)}
         onKeyDown={(e) => e.key === "Escape" && close()}
         placeholder={placeholder}
-        className="rounded-lg border border-line bg-card px-3 py-2 text-sm outline-none focus:border-muted"
+        className="rounded-md border border-line bg-card px-3 py-1.5 text-sm outline-none focus:border-focus focus:ring-2 focus:ring-focus/30"
       />
       <div className="flex gap-2">
-        <button className="rounded-lg bg-primary px-3 py-1.5 text-sm text-on-primary">Add</button>
-        <button type="button" onClick={close} className="px-3 py-1.5 text-sm text-muted">
+        <button className="rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-on-primary hover:bg-primary-hover">Add</button>
+        <button type="button" onClick={close} className="rounded-md px-3 py-1.5 text-sm text-muted hover:bg-hover">
           Cancel
         </button>
       </div>
